@@ -31,13 +31,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
-import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import org.smartmenu.project.ui.viewmodels.MetricsViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
-    val vm: AuthViewModel = viewModel()
-
-
+fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
+    val vm: MetricsViewModel = viewModel()
 }

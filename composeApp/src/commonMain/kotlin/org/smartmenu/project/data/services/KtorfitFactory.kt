@@ -45,8 +45,8 @@ object KtorfitFactory {
         .baseUrl(base)
         .build()
 
-    fun getAuthService(): AuthService {
-        return ktorfit.createAuthService()
+    fun getMetricsService(): MetricsService {
+        return ktorfit.createMetricsService()
     }
 
 }
