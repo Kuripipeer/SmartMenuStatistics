@@ -28,7 +28,7 @@ fun ActionButton(
             .height(60.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.primary,
-            contentColor = colors.onPrimary
+            contentColor = Color.White
         ),
         shape = RoundedCornerShape(
             topStart = 16.dp,

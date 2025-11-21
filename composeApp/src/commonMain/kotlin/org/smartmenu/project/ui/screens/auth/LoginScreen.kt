@@ -37,8 +37,10 @@ import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.painterResource
+import org.smartmenu.project.ui.RegisterScreenRoute
 import smartmenustatistics.composeapp.generated.resources.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -153,7 +155,7 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
                         color = colors.primary,
                         modifier = Modifier
                             .clickable {
-
+                                navController.navigate(RegisterScreenRoute)
                             }
                     )
                 }

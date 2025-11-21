@@ -86,6 +86,10 @@ android {
     }
 }
 
+compose.resources{
+    publicResClass = true
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
 }
