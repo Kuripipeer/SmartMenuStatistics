@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 
 object KtorfitFactory {
 
-    val base = "https://b6600bcd5336.ngrok-free.app/api/"
+    val base = "http://159.89.144.67:3000/api/"
 
     private val httpClient = HttpClient {
         expectSuccess = false

@@ -48,3 +48,30 @@ val DarkColors = darkColorScheme(
     onSurfaceVariant = TextSecondaryDark,
     outline = OutlineDark
 )
+
+// ===== PALETA OFICIAL DE 10 COLORES PARA GRÁFICAS =====
+// 100% armonizada con tu UI (azules, aqua, morados y pasteles)
+
+val ChartBlue            = Color(0xFF4C8CFF)   // Azul principal
+val ChartAqua            = Color(0xFF54D6FF)   // Aqua brillante
+val ChartAquaPastel      = Color(0xFF9DEBFF)   // Aqua pastel
+val ChartPurple          = Color(0xFFA98BFF)   // Morado acento
+val ChartPurplePastel    = Color(0xFFCDBBFF)   // Morado pastel
+val ChartBluePastel      = Color(0xFFBBD4FF)   // Azul pastel
+val ChartTealSoft        = Color(0xFF7EE6C8)   // Verde-azulado suave
+val ChartGraySoft        = Color(0xFFC5D0DD)   // Gris frío suave
+val ChartYellowSoft      = Color(0xFFFFE8A3)   // Amarillo pastel
+val ChartCoralSoft       = Color(0xFFFFB3A3)   // Coral pastel
+
+val ChartColors = listOf(
+    ChartBlue,
+    ChartAqua,
+    ChartAquaPastel,
+    ChartPurple,
+    ChartPurplePastel,
+    ChartBluePastel,
+    ChartTealSoft,
+    ChartGraySoft,
+    ChartYellowSoft,
+    ChartCoralSoft
+)
