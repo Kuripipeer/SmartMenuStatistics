@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,8 +29,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.jetbrains.compose.resources.painterResource
+import org.smartmenu.project.ui.ChartBlue
+import org.smartmenu.project.ui.HomeScreenRoute
+import org.smartmenu.project.ui.LoginScreenRoute
 import smartmenustatistics.composeapp.generated.resources.Res
-import smartmenustatistics.composeapp.generated.resources.logo
+import smartmenustatistics.composeapp.generated.resources.empresario
 
 @Composable
 fun Header(navController: NavController) {
@@ -44,18 +46,18 @@ fun Header(navController: NavController) {
     ){
         IconButton(
             onClick = {
-                navController.popBackStack()
+                navController.navigate(LoginScreenRoute) {
+                    popUpTo(HomeScreenRoute) { inclusive = true }
+                }
             }
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Regresar",
-                tint = colors.primary,
+                tint = ChartBlue,
                 modifier =
                     Modifier
                         .size(30.dp)
-                        .clip(CircleShape)
-                        .background(color = Color.White.copy(alpha = 0.7f))
             )
         }
         Text(
@@ -76,11 +78,9 @@ fun Header(navController: NavController) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Regresar",
-                tint = colors.primary,
+                tint = ChartBlue,
                 modifier = Modifier
                     .size(30.dp)
-                    .clip(CircleShape)
-                    .background(color = Color.White.copy(alpha = 0.7f))
             )
         }
     }
@@ -93,11 +93,11 @@ fun Header(navController: NavController) {
         horizontalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(Res.drawable.logo),
-            contentDescription = "Logo",
-            contentScale = ContentScale.Fit,
+            painter = painterResource(Res.drawable.empresario),
+            contentDescription = "Usuario",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(120.dp)
+                .size(150.dp)
                 .clip(CircleShape)
                 .background(Color.White)
         )
@@ -115,7 +115,7 @@ fun Header(navController: NavController) {
             style = MaterialTheme.typography.titleLarge
         )
         Text(
-            text = " - Gerente",
+            text = "Administrador",
             style = MaterialTheme.typography.titleMedium
         )
     }

@@ -1,6 +1,5 @@
 package org.smartmenu.project.ui.screens.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.background
@@ -13,8 +12,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.filled.AddBusiness
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.PeopleAlt
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Person2
+import androidx.compose.material.icons.filled.Person4
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.PersonAddAlt1
+import androidx.compose.material.icons.filled.PersonPinCircle
+import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,7 +46,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.smartmenu.project.models.Grafica
 import org.smartmenu.project.ui.AccentPurpleDark
+import org.smartmenu.project.ui.HomeScreenRoute
+import org.smartmenu.project.ui.LoginScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
+import org.smartmenu.project.ui.screens.home.components.ActionCard
 import org.smartmenu.project.ui.screens.home.components.GraficaCard
 import org.smartmenu.project.ui.screens.home.components.Header
 import org.smartmenu.project.ui.screens.home.components.charts.BarChart
@@ -71,27 +86,75 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                 )
             )
     )
-    LazyColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 50.dp)
     ){
-        item {
-            Header(
+        Header(
                 navController = navController
-            )
-        }
+        )
 
-        item {
-            Column(
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
+                .background(colors.background)
+                .padding(horizontal = 15.dp, vertical = 15.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                ActionCard(
+                    text = "Consultar usuarios",
+                    icon = Icons.Default.Person,
+                    onClick = {}
+                )
+                ActionCard(
+                    text = "Agregar usuario",
+                    icon = Icons.Default.PersonAddAlt1,
+                    onClick = {}
+                )
+                ActionCard(
+                    text = "Consultar proveedor",
+                    icon = Icons.Default.PersonSearch,
+                    onClick = {}
+                )
+                ActionCard(
+                    text = "Agregar proveedor",
+                    icon = Icons.Default.AddBusiness,
+                    onClick = {}
+                )
+                ActionCard(
+                    text = "Clientes frecuentes",
+                    icon = Icons.Default.PeopleAlt,
+                    onClick = {}
+                )
+            }
+
+            Button(
+                onClick = {
+                    navController.navigate(LoginScreenRoute) {
+                        popUpTo(HomeScreenRoute) { inclusive = true }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillParentMaxHeight()
-                    .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
-                    .background(colors.background)
-                    .padding(horizontal = 15.dp),
+                    .padding(vertical = 8.dp)
+                    .height(52.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = colors.primary)
             ) {
-                Text(text = "Hola")
+                Text(
+                    text = "Cerrar sesión",
+                    color = colors.onPrimary,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
 //        item {
