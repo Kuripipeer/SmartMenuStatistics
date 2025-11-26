@@ -37,9 +37,12 @@ import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.painterResource
+import org.smartmenu.project.ui.HomeScreenRoute
+import org.smartmenu.project.ui.LoginScreenRoute
 import org.smartmenu.project.ui.RegisterScreenRoute
 import smartmenustatistics.composeapp.generated.resources.*
 
@@ -56,6 +59,16 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
     }
     var showPassword by remember {
         mutableStateOf(false)
+    }
+
+    LaunchedEffect(authViewModel.isLogged){
+        if (authViewModel.isLogged){
+            navController.navigate(HomeScreenRoute){
+                popUpTo(LoginScreenRoute){
+                    inclusive = true
+                }
+            }
+        }
     }
 
     Box (
@@ -141,7 +154,18 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
                     )
 
                     // Login Button
-                    ActionButton("Login")
+                    ActionButton(
+                        text = "Login",
+                        onClick = {
+                            if ( email.isBlank() || password.isBlank()) return@ActionButton
+
+                            authViewModel.login(
+                                user = email,
+                                password = password
+                            )
+                        }
+                    )
+
                 }
             }
         }

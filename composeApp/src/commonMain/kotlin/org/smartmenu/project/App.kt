@@ -39,7 +39,7 @@ fun App() {
         Scaffold { innerPadding: PaddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = HomeScreenRoute
+                startDestination = LoginScreenRoute
             ) {
                 composable<LoginScreenRoute> {
                     LoginScreen(

@@ -22,7 +22,7 @@ fun ActionButton(
 ){
     val colors = MaterialTheme.colorScheme
     Button(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
