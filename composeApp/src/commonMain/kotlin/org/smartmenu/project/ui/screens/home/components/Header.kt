@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.jetbrains.compose.resources.painterResource
+import org.smartmenu.project.data.services.Preferences
 import org.smartmenu.project.ui.ChartBlue
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
@@ -47,6 +48,7 @@ fun Header(navController: NavController) {
         IconButton(
             onClick = {
                 navController.navigate(LoginScreenRoute) {
+                    Preferences.clearPreferences()
                     popUpTo(HomeScreenRoute) { inclusive = true }
                 }
             }

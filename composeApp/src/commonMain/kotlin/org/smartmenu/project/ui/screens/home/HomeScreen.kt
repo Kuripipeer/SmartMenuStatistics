@@ -44,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.smartmenu.project.data.services.Preferences
 import org.smartmenu.project.models.Grafica
 import org.smartmenu.project.ui.AccentPurpleDark
 import org.smartmenu.project.ui.HomeScreenRoute
@@ -136,6 +137,7 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
 
             Button(
                 onClick = {
+                    Preferences.clearPreferences()
                     navController.navigate(LoginScreenRoute) {
                         popUpTo(HomeScreenRoute) { inclusive = true }
                     }
