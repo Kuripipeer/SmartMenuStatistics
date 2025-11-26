@@ -69,7 +69,7 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(
-                            colors.primary.copy(alpha = 0.95f),
+                            colors.secondary.copy(alpha = 0.90f),
                             AccentPurpleDark.copy(alpha = 0.95f)
                         ),
                         start = Offset(0f, 0f),
