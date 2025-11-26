@@ -179,22 +179,6 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                     // Login Button
                     ActionButton("Sign Up")
                 }
-
-                // Sing Up
-                Column (
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Text(
-                        text = "Already have any account? Sign In",
-                        color = colors.primary,
-                        modifier = Modifier
-                            .clickable {
-                                navController.popBackStack()
-                            }
-                    )
-                }
             }
         }
     }

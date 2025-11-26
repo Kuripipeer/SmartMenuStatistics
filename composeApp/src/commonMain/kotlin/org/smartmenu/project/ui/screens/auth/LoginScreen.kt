@@ -143,22 +143,6 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
                     // Login Button
                     ActionButton("Login")
                 }
-
-                // Sing Up
-                Column (
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Text(
-                        text = "Don't have any account? Sign Up",
-                        color = colors.primary,
-                        modifier = Modifier
-                            .clickable {
-                                navController.navigate(RegisterScreenRoute)
-                            }
-                    )
-                }
             }
         }
     }
