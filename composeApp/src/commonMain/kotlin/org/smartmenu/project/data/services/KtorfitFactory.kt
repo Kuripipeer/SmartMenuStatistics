@@ -49,4 +49,8 @@ object KtorfitFactory {
         return ktorfit.createMetricsService()
     }
 
+    fun getAuthService(): AuthService {
+        return ktorfit.createAuthService()
+    }
+
 }
