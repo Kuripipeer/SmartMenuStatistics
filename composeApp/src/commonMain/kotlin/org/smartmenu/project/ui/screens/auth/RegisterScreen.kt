@@ -2,13 +2,12 @@ package org.smartmenu.project.ui.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,24 +24,31 @@ import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.smartmenu.project.models.RolesResponse
 import org.smartmenu.project.ui.AccentPurpleDark
+import org.smartmenu.project.ui.HomeScreenRoute
+import org.smartmenu.project.ui.RegisterScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
+import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.auth.components.ActionButton
 import org.smartmenu.project.ui.screens.auth.components.HiddenTextField
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.screens.auth.components.RoleDropdownPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
-import org.smartmenu.project.ui.viewmodels.AuthViewModel
 
 @Composable
 fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
+
     val colors = MaterialTheme.colorScheme
-    val authViewModel: AuthViewModel = viewModel()
     val admvm: AdmonViewModel = viewModel()
 
-    // Roles traídos desde ViewModel
+    // Estados desde VM
     val roles = admvm.rolesList.value
+    val userCreatedSuccess by admvm.userCreatedSuccessfully
+    val userCreateError by admvm.userCreateError
 
-    // Estados del formulario
+    // Snackbar
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Estados del form
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -53,76 +59,102 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
 
     var selectedRole by remember { mutableStateOf<RolesResponse?>(null) }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Background
+    // === MANEJO DE EXITO ===
+    if (userCreatedSuccess) {
+        LaunchedEffect(Unit) {
+            snackbarHostState.showSnackbar("Usuario creado con éxito")
+
+            // Cambia "home" por tu ruta real
+            navController.navigate(UsersScreenRoute) {
+                popUpTo(RegisterScreenRoute) { inclusive = true }
+            }
+
+            admvm.resetSuccessState()
+        }
+    }
+
+    // === MANEJO DE ERROR ===
+    userCreateError?.let { errorMsg ->
+        LaunchedEffect(errorMsg) {
+            snackbarHostState.showSnackbar(errorMsg)
+            admvm.resetErrorState()
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { scaffoldPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            colors.primary.copy(alpha = 0.95f),
-                            AccentPurpleDark.copy(alpha = 0.95f)
-                        ),
-                        start = Offset(0f, 0f),
-                        end = Offset(1000f, 0f)
-                    )
-                )
-        )
+                .padding(scaffoldPadding)
+        ) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            // Encabezado
-            Row(
+            // Background degradado
+            Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier.size(48.dp)
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                colors.primary.copy(alpha = 0.95f),
+                                AccentPurpleDark.copy(alpha = 0.95f)
+                            ),
+                            start = Offset(0f, 0f),
+                            end = Offset(1000f, 0f)
+                        )
+                    )
+            )
+
+            Column(modifier = Modifier.fillMaxSize()) {
+
+                // Encabezado
+                Row(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .height(90.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = Color.White
+                    IconButton(
+                        onClick = {
+                            navController.navigate(UsersScreenRoute) {
+                                popUpTo(RegisterScreenRoute) { inclusive = true }
+                            }
+                        },
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White
+                        )
+                    }
+
+                    Text(
+                        text = "Sign Up",
+                        fontSize = 40.sp,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 40.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
 
-                Text(
-                    text = "Sign Up",
-                    fontSize = 40.sp,
-                    color = Color.White,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 40.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            // Contenido (formulario)
-            Column(
-                modifier = Modifier
-                    .weight(6f)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(topStart = 60.dp))
-                    .background(colors.background)
-                    .padding(horizontal = 38.dp, vertical = 38.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                // CONTENIDO DEL FORM
+                // Contenido scrollable
                 Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(topStart = 60.dp))
+                        .background(colors.background)
+                        .padding(horizontal = 38.dp, vertical = 38.dp)
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Nombre
+
+                    // Campo First Name
                     TextFieldPrefab(
                         text = "First Name",
                         value = firstName,
@@ -130,7 +162,7 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         placeholder = "Juan Alfonso"
                     )
 
-                    // Apellido
+                    // Campo Last Name
                     TextFieldPrefab(
                         text = "Last Name",
                         value = lastName,
@@ -138,7 +170,7 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         placeholder = "Pérez López"
                     )
 
-                    // Dropdown Rol (versión corregida)
+                    // Dropdown Rol
                     RoleDropdownPrefab(
                         roles = roles,
                         selectedRole = selectedRole,
@@ -171,6 +203,8 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         onShowPasswordChange = { showConfirmPassword = !showConfirmPassword }
                     )
 
+                    Spacer(modifier = Modifier.height(20.dp))
+
                     // Botón
                     ActionButton(
                         text = "Sign Up",
@@ -194,6 +228,8 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                             )
                         }
                     )
+
+                    Spacer(modifier = Modifier.height(60.dp))
                 }
             }
         }

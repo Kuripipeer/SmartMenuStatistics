@@ -13,3 +13,6 @@ object RegisterScreenRoute
 
 @Serializable
 object UsersScreenRoute
+
+@Serializable
+data class EditUserScreenRoute(val userId: Int)

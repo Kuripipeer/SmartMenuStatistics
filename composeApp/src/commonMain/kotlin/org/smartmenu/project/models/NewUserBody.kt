@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class NewUserBody(
     val nombre: String,
     val usuario: String,
-    val contraseña: String,
+    val contraseña: String?,
     val rol_id: Int
 )

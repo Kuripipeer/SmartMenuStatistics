@@ -18,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.smartmenu.project.ui.EditUserScreenRoute
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
 import org.smartmenu.project.ui.RegisterScreenRoute
@@ -28,6 +30,7 @@ import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.auth.LoginScreen
 import org.smartmenu.project.ui.screens.auth.RegisterScreen
 import org.smartmenu.project.ui.screens.home.HomeScreen
+import org.smartmenu.project.ui.screens.users.EditUser
 import org.smartmenu.project.ui.screens.users.UserHome
 
 import smartmenustatistics.composeapp.generated.resources.Res
@@ -67,6 +70,16 @@ fun App() {
                         innerPadding = innerPadding
                     )
                 }
+                composable<EditUserScreenRoute> { entry ->
+                    val args = entry.toRoute<EditUserScreenRoute>()
+
+                    EditUser(
+                        navController = navController,
+                        innerPadding = innerPadding,
+                        userId = args.userId
+                    )
+                }
+
             }
         }
     }
