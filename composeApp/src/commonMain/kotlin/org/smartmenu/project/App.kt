@@ -24,9 +24,11 @@ import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
 import org.smartmenu.project.ui.RegisterScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
+import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.auth.LoginScreen
 import org.smartmenu.project.ui.screens.auth.RegisterScreen
 import org.smartmenu.project.ui.screens.home.HomeScreen
+import org.smartmenu.project.ui.screens.users.UserHome
 
 import smartmenustatistics.composeapp.generated.resources.Res
 import smartmenustatistics.composeapp.generated.resources.compose_multiplatform
@@ -55,6 +57,12 @@ fun App() {
                 }
                 composable<HomeScreenRoute> {
                     HomeScreen(
+                        navController = navController,
+                        innerPadding = innerPadding
+                    )
+                }
+                composable<UsersScreenRoute>{
+                    UserHome(
                         navController = navController,
                         innerPadding = innerPadding
                     )

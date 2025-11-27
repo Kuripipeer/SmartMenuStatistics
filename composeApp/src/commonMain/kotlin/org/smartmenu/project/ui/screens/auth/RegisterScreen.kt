@@ -1,15 +1,7 @@
 package org.smartmenu.project.ui.screens.auth
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,11 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,42 +23,38 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.smartmenu.project.models.RolesResponse
 import org.smartmenu.project.ui.AccentPurpleDark
 import org.smartmenu.project.ui.SmartMenuTheme
 import org.smartmenu.project.ui.screens.auth.components.ActionButton
 import org.smartmenu.project.ui.screens.auth.components.HiddenTextField
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
+import org.smartmenu.project.ui.screens.auth.components.RoleDropdownPrefab
+import org.smartmenu.project.ui.viewmodels.AdmonViewModel
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
+fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
     val colors = MaterialTheme.colorScheme
-    val authViewModel : AuthViewModel = viewModel()
-    var firstName by remember {
-        mutableStateOf("")
-    }
-    var lastName by remember {
-        mutableStateOf("")
-    }
-    var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
-    var confirmPassword by remember {
-        mutableStateOf("")
-    }
-    var showPassword by remember {
-        mutableStateOf(false)
-    }
-    var showConfirmPassword by remember {
-        mutableStateOf(false)
-    }
+    val authViewModel: AuthViewModel = viewModel()
+    val admvm: AdmonViewModel = viewModel()
 
-    Box (
-        modifier = Modifier
-            .fillMaxSize()
+    // Roles traídos desde ViewModel
+    val roles = admvm.rolesList.value
+
+    // Estados del formulario
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var showPassword by remember { mutableStateOf(false) }
+    var showConfirmPassword by remember { mutableStateOf(false) }
+
+    var selectedRole by remember { mutableStateOf<RolesResponse?>(null) }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
         // Background
         Box(
@@ -87,18 +71,17 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                     )
                 )
         )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
 
-        ) {
-            Row (
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            // Encabezado
+            Row(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
                     .padding(innerPadding),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 IconButton(
                     onClick = { navController.popBackStack() },
                     modifier = Modifier.size(48.dp)
@@ -109,6 +92,7 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                         tint = Color.White
                     )
                 }
+
                 Text(
                     text = "Sign Up",
                     fontSize = 40.sp,
@@ -120,8 +104,8 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                 )
             }
 
-            // Parte del login
-            Column (
+            // Contenido (formulario)
+            Column(
                 modifier = Modifier
                     .weight(6f)
                     .fillMaxWidth()
@@ -129,14 +113,16 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                     .background(colors.background)
                     .padding(horizontal = 38.dp, vertical = 38.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Column (
+            ) {
+
+                // CONTENIDO DEL FORM
+                Column(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    // Email
+                ) {
+                    // Nombre
                     TextFieldPrefab(
                         text = "First Name",
                         value = firstName,
@@ -144,13 +130,22 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                         placeholder = "Juan Alfonso"
                     )
 
+                    // Apellido
                     TextFieldPrefab(
                         text = "Last Name",
                         value = lastName,
                         onValueChange = { lastName = it },
-                        placeholder = "Perez Lopez"
+                        placeholder = "Pérez López"
                     )
 
+                    // Dropdown Rol (versión corregida)
+                    RoleDropdownPrefab(
+                        roles = roles,
+                        selectedRole = selectedRole,
+                        onRoleSelected = { selectedRole = it }
+                    )
+
+                    // Email
                     TextFieldPrefab(
                         text = "Email",
                         value = email,
@@ -167,7 +162,7 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                         onShowPasswordChange = { showPassword = !showPassword }
                     )
 
-                    //Confirm Password
+                    // Confirm Password
                     HiddenTextField(
                         text = "Confirm Password",
                         value = confirmPassword,
@@ -176,8 +171,29 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
                         onShowPasswordChange = { showConfirmPassword = !showConfirmPassword }
                     )
 
-                    // Login Button
-                    ActionButton("Sign Up")
+                    // Botón
+                    ActionButton(
+                        text = "Sign Up",
+                        onClick = {
+                            if (
+                                firstName.isBlank() ||
+                                lastName.isBlank() ||
+                                email.isBlank() ||
+                                password.isBlank() ||
+                                confirmPassword.isBlank()
+                            ) return@ActionButton
+
+                            if (password != confirmPassword) return@ActionButton
+                            if (selectedRole == null) return@ActionButton
+
+                            admvm.newUser(
+                                nombre = "$firstName $lastName",
+                                usuario = email,
+                                contraseña = password,
+                                rol_id = selectedRole!!.id
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -186,7 +202,7 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues){
 
 @Preview
 @Composable
-fun RegisterScreenPreview(){
+fun RegisterScreenPreview() {
     SmartMenuTheme {
         RegisterScreen(
             navController = rememberNavController(),

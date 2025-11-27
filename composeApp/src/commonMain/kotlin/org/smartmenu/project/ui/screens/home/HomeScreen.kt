@@ -50,12 +50,14 @@ import org.smartmenu.project.ui.AccentPurpleDark
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
+import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.home.components.ActionCard
 import org.smartmenu.project.ui.screens.home.components.GraficaCard
 import org.smartmenu.project.ui.screens.home.components.Header
 import org.smartmenu.project.ui.screens.home.components.charts.BarChart
 import org.smartmenu.project.ui.screens.home.components.charts.LineChart
 import org.smartmenu.project.ui.screens.home.components.charts.PieChart
+import org.smartmenu.project.ui.viewmodels.AdmonViewModel
 import org.smartmenu.project.ui.viewmodels.MetricsViewModel
 import smartmenustatistics.composeapp.generated.resources.*
 
@@ -64,6 +66,7 @@ import smartmenustatistics.composeapp.generated.resources.*
 @Composable
 fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
     val mVm: MetricsViewModel = viewModel()
+    val admonVm: AdmonViewModel = viewModel()
     val colors = MaterialTheme.colorScheme
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
@@ -111,17 +114,41 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                 ActionCard(
                     text = "Consultar usuarios",
                     icon = Icons.Default.Person,
-                    onClick = {}
+                    onClick = {
+                        navController.navigate(UsersScreenRoute) {
+                            popUpTo(HomeScreenRoute) { inclusive = true }
+                        }
+//                        scope.launch {
+////                            admonVm.getUsers()
+//                            admonVm.getRoles()
+//                            //sheetState.expand()
+//                        }
+
+                    }
                 )
                 ActionCard(
                     text = "Agregar usuario",
                     icon = Icons.Default.PersonAddAlt1,
-                    onClick = {}
+                    onClick = {
+                        scope.launch {
+                            admonVm.newUser(
+                                nombre = "Juan Perez",
+                                usuario = "juan.perez",
+                                contraseña = "password123",
+                                rol_id = 2
+                            )
+                        }
+                    }
                 )
                 ActionCard(
                     text = "Consultar proveedor",
                     icon = Icons.Default.PersonSearch,
-                    onClick = {}
+                    onClick = {
+                        scope.launch {
+                            admonVm.getProveedores()
+                            //sheetState.expand()
+                        }
+                    }
                 )
                 ActionCard(
                     text = "Agregar proveedor",
@@ -131,7 +158,12 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                 ActionCard(
                     text = "Clientes frecuentes",
                     icon = Icons.Default.PeopleAlt,
-                    onClick = {}
+                    onClick = {
+                        scope.launch {
+                            admonVm.getClients()
+                            //sheetState.expand()
+                        }
+                    }
                 )
             }
 

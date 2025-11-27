@@ -53,4 +53,8 @@ object KtorfitFactory {
         return ktorfit.createAuthService()
     }
 
+    fun getAdmonService(): AdmonService {
+        return ktorfit.createAdmonService()
+    }
+
 }

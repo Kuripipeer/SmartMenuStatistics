@@ -10,3 +10,6 @@ object HomeScreenRoute
 
 @Serializable
 object RegisterScreenRoute
+
+@Serializable
+object UsersScreenRoute

@@ -24,4 +24,8 @@ object Preferences {
     fun clearPreferences() {
         settings.clear()
     }
+
+    fun saveUserRole(role: String) {
+        settings.putString("userRole", role)
+    }
 }

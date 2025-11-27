@@ -1,7 +1,6 @@
 package org.smartmenu.project.ui.screens.auth
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,12 +37,10 @@ import org.smartmenu.project.ui.viewmodels.AuthViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.painterResource
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
-import org.smartmenu.project.ui.RegisterScreenRoute
 import smartmenustatistics.composeapp.generated.resources.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,7 +138,7 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
                         text = "Email",
                         value = email,
                         onValueChange = { email = it },
-                        placeholder = "ejemplo@gmail.com"
+                        placeholder = "ejemplo@gmail.com",
                     )
 
                     // Password
