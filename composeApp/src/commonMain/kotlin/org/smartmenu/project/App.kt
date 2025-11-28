@@ -21,10 +21,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.smartmenu.project.ui.ClientsScreenRoute
+import org.smartmenu.project.ui.EditClientScreenRoute
 import org.smartmenu.project.ui.EditSupplierScreenRoute
 import org.smartmenu.project.ui.EditUserScreenRoute
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
+import org.smartmenu.project.ui.NewClientScreenRoute
 import org.smartmenu.project.ui.NewSupplierScreenRoute
 import org.smartmenu.project.ui.RegisterScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
@@ -32,6 +35,9 @@ import org.smartmenu.project.ui.SuppliersScreenRoute
 import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.auth.LoginScreen
 import org.smartmenu.project.ui.screens.auth.RegisterScreen
+import org.smartmenu.project.ui.screens.clients.ClientsHome
+import org.smartmenu.project.ui.screens.clients.EditClient
+import org.smartmenu.project.ui.screens.clients.NewClient
 import org.smartmenu.project.ui.screens.home.HomeScreen
 import org.smartmenu.project.ui.screens.suppliers.EditAddSupplier
 import org.smartmenu.project.ui.screens.suppliers.NewSupplier
@@ -102,6 +108,26 @@ fun App() {
                         navController = navController,
                         innerPadding = innerPadding,
                         supplierId = args.supplierId
+                    )
+                }
+                composable<ClientsScreenRoute> {
+                    ClientsHome(
+                        navController = navController,
+                        innerPadding = innerPadding
+                    )
+                }
+                composable<NewClientScreenRoute> {
+                    NewClient(
+                        navController = navController,
+                        innerPadding = innerPadding
+                    )
+                }
+                composable<EditClientScreenRoute> {
+                    val args = it.toRoute<EditClientScreenRoute>()
+                    EditClient(
+                        navController = navController,
+                        innerPadding = innerPadding,
+                        clientId = args.clientId
                     )
                 }
             }

@@ -47,6 +47,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.smartmenu.project.data.services.Preferences
 import org.smartmenu.project.models.Grafica
 import org.smartmenu.project.ui.AccentPurpleDark
+import org.smartmenu.project.ui.ClientsScreenRoute
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
@@ -146,18 +147,19 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                         }
                     }
                 )
-                ActionCard(
-                    text = "Agregar proveedor",
-                    icon = Icons.Default.AddBusiness,
-                    onClick = {}
-                )
+//                ActionCard(
+//                    text = "Agregar proveedor",
+//                    icon = Icons.Default.AddBusiness,
+//                    onClick = {}
+//                )
                 ActionCard(
                     text = "Clientes frecuentes",
                     icon = Icons.Default.PeopleAlt,
                     onClick = {
                         scope.launch {
-                            admonVm.getClients()
-                            //sheetState.expand()
+                            navController.navigate(ClientsScreenRoute){
+                                popUpTo(HomeScreenRoute) { inclusive = true}
+                            }
                         }
                     }
                 )

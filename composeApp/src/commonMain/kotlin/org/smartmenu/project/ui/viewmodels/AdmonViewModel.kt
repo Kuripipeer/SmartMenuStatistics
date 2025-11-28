@@ -21,6 +21,28 @@ class AdmonViewModel : ViewModel() {
     val selectedUser: State<UsersResponse?> = _selectedUser
 
     // ================================
+    // LISTA DE CLIENTES
+    // ================================
+    private val _clientsList = mutableStateOf<List<ClientsResponseItem>>(emptyList())
+    val clientsList: State<List<ClientsResponseItem>> = _clientsList
+
+    private val _selectedClient = mutableStateOf<ClientsResponseItem?>(null)
+    val selectedClient: State<ClientsResponseItem?> = _selectedClient
+
+    // Estados clientes
+    private val _clientCreateSuccess = mutableStateOf(false)
+    val clientCreateSuccess: State<Boolean> = _clientCreateSuccess
+
+    private val _clientCreateError = mutableStateOf<String?>(null)
+    val clientCreateError: State<String?> = _clientCreateError
+
+    private val _clientUpdateSuccess = mutableStateOf(false)
+    val clientUpdateSuccess: State<Boolean> = _clientUpdateSuccess
+
+    private val _clientUpdateError = mutableStateOf<String?>(null)
+    val clientUpdateError: State<String?> = _clientUpdateError
+
+    // ================================
     // LISTA DE PROVEEDORES
     // ================================
     private val _suppliersList = mutableStateOf<List<ProveedorResponse>>(emptyList())
@@ -29,6 +51,18 @@ class AdmonViewModel : ViewModel() {
     private val _selectedSupplier = mutableStateOf<ProveedorResponse?>(null)
     val selectedSupplier: State<ProveedorResponse?> = _selectedSupplier
 
+    private val _supplierUpdateSuccess = mutableStateOf(false)
+    val supplierUpdateSuccess: State<Boolean> = _supplierUpdateSuccess
+
+    private val _supplierUpdateError = mutableStateOf<String?>(null)
+    val supplierUpdateError: State<String?> = _supplierUpdateError
+
+    private val _supplierCreateSuccess = mutableStateOf(false)
+    val supplierCreateSuccess: State<Boolean> = _supplierCreateSuccess
+
+    private val _supplierCreateError = mutableStateOf<String?>(null)
+    val supplierCreateError: State<String?> = _supplierCreateError
+
     // ================================
     // ROLES
     // ================================
@@ -36,7 +70,7 @@ class AdmonViewModel : ViewModel() {
     val rolesList: State<List<RolesResponse>> = _rolesList
 
     // ================================
-    // ESTADOS (Usuarios)
+    // USUARIO Estados
     // ================================
     private val _userCreatedSuccessfully = mutableStateOf(false)
     val userCreatedSuccessfully: State<Boolean> = _userCreatedSuccessfully
@@ -50,25 +84,8 @@ class AdmonViewModel : ViewModel() {
     private val _userUpdateError = mutableStateOf<String?>(null)
     val userUpdateError: State<String?> = _userUpdateError
 
-    // ================================
-    // ESTADOS (Proveedores)
-    // ================================
-    private val _supplierUpdateSuccess = mutableStateOf(false)
-    val supplierUpdateSuccess: State<Boolean> = _supplierUpdateSuccess
 
-    private val _supplierUpdateError = mutableStateOf<String?>(null)
-    val supplierUpdateError: State<String?> = _supplierUpdateError
-    // CREAR
-    private val _supplierCreateSuccess = mutableStateOf(false)
-    val supplierCreateSuccess: State<Boolean> = _supplierCreateSuccess
-
-    private val _supplierCreateError = mutableStateOf<String?>(null)
-    val supplierCreateError: State<String?> = _supplierCreateError
-
-
-    // ================================
-    // SERVICIO
-    // ================================
+    // Servicio
     private val admonService = KtorfitFactory.getAdmonService()
     private val token = Preferences.getAuthToken()
 
@@ -82,8 +99,7 @@ class AdmonViewModel : ViewModel() {
     fun getRoles() {
         viewModelScope.launch {
             try {
-                val response = admonService.getRoles("Bearer $token")
-                _rolesList.value = response
+                _rolesList.value = admonService.getRoles("Bearer $token")
             } catch (e: Exception) {
                 println("Error fetching roles: ${e.message}")
             }
@@ -91,16 +107,91 @@ class AdmonViewModel : ViewModel() {
     }
 
     // ============================================================
-    // CLIENTES
+    // CLIENTES CRUD
     // ============================================================
-    fun getClients() {
+    fun getClientes() {
         viewModelScope.launch {
             try {
-                admonService.getClientes("Bearer $token")
+                val response = admonService.getClientes("Bearer $token")
+                _clientsList.value = response
             } catch (e: Exception) {
                 println("Error fetching clients: ${e.message}")
             }
         }
+    }
+
+    fun newClient(nombre: String, telefono: String, correo: String) {
+        viewModelScope.launch {
+            try {
+                val request = NewClientBody(nombre, telefono, correo)
+                val response = admonService.createCliente("Bearer $token", request)
+
+                if (response.error != null) {
+                    _clientCreateError.value = response.error
+                } else {
+                    _clientCreateSuccess.value = true
+                }
+
+            } catch (e: Exception) {
+                _clientCreateError.value = e.message ?: "Error desconocido"
+            }
+        }
+    }
+
+    fun getClientById(id: Int) {
+        viewModelScope.launch {
+            try {
+                val response = admonService.getClientById("Bearer $token", id)
+                _selectedClient.value = response
+            } catch (e: Exception) {
+                println("Error fetching client: ${e.message}")
+            }
+        }
+    }
+
+    fun updateClient(id: Int, nombre: String, telefono: String, correo: String) {
+        viewModelScope.launch {
+            try {
+                val request = NewClientBody(nombre, telefono, correo)
+                val response = admonService.updateCliente("Bearer $token", request, id)
+
+                if (response.error != null) {
+                    _clientUpdateError.value = response.error
+                } else {
+                    _clientUpdateSuccess.value = true
+                }
+
+            } catch (e: Exception) {
+                _clientUpdateError.value = e.message ?: "Error desconocido"
+            }
+        }
+    }
+
+    fun deleteClient(id: Int) {
+        viewModelScope.launch {
+            try {
+                val response = admonService.deleteCliente("Bearer $token", id)
+
+                if (response.error != null) {
+                    _clientUpdateError.value = response.error
+                } else {
+                    _clientUpdateSuccess.value = true
+                }
+
+            } catch (e: Exception) {
+                _clientUpdateError.value = e.message ?: "Error desconocido"
+            }
+        }
+    }
+
+    fun resetClientCreateStates() {
+        _clientCreateSuccess.value = false
+        _clientCreateError.value = null
+    }
+
+    fun resetClientUpdateStates() {
+        _clientUpdateSuccess.value = false
+        _clientUpdateError.value = null
     }
 
     // ============================================================
@@ -109,21 +200,19 @@ class AdmonViewModel : ViewModel() {
     fun getUsers() {
         viewModelScope.launch {
             try {
-                val response = admonService.getUsuarios("Bearer $token")
-                _usersList.value = response
+                _usersList.value = admonService.getUsuarios("Bearer $token")
             } catch (e: Exception) {
                 println("Error fetching users: ${e.message}")
             }
         }
     }
 
-    fun getUserById(userId: Int) {
+    fun getUserById(id: Int) {
         viewModelScope.launch {
             try {
-                val response = admonService.getUserById("Bearer $token", userId)
-                _selectedUser.value = response
+                _selectedUser.value = admonService.getUserById("Bearer $token", id)
             } catch (e: Exception) {
-                println("Error fetching user by ID: ${e.message}")
+                println("Error fetching user: ${e.message}")
             }
         }
     }
@@ -132,7 +221,6 @@ class AdmonViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val request = NewUserBody(nombre, usuario, contraseña, rol_id)
-
                 val response = admonService.createUser("Bearer $token", request)
 
                 if (response.error != null) {
@@ -187,12 +275,6 @@ class AdmonViewModel : ViewModel() {
         _userUpdateError.value = null
     }
 
-    fun resetCreateStates() {
-        _userCreatedSuccessfully.value = false
-        _userCreateError.value = null
-    }
-
-    // RESETEAR ESTADOS (Compatibilidad con RegisterScreen)
     fun resetSuccessState() {
         _userCreatedSuccessfully.value = false
     }
@@ -201,15 +283,13 @@ class AdmonViewModel : ViewModel() {
         _userCreateError.value = null
     }
 
-
     // ============================================================
     // PROVEEDORES CRUD
     // ============================================================
     fun getProveedores() {
         viewModelScope.launch {
             try {
-                val response = admonService.getProveedores("Bearer $token")
-                _suppliersList.value = response
+                _suppliersList.value = admonService.getProveedores("Bearer $token")
             } catch (e: Exception) {
                 println("Error fetching proveedores: ${e.message}")
             }
@@ -219,10 +299,9 @@ class AdmonViewModel : ViewModel() {
     fun getProveedorById(id: Int) {
         viewModelScope.launch {
             try {
-                val response = admonService.getProveedorById(id)
-                _selectedSupplier.value = response
+                _selectedSupplier.value = admonService.getProveedorById(id)
             } catch (e: Exception) {
-                println("Error fetching proveedor by ID: ${e.message}")
+                println("Error fetching proveedor: ${e.message}")
             }
         }
     }
@@ -231,10 +310,7 @@ class AdmonViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val request = NewSupplierBody(nombre, contacto, telefono, correo)
-
-                val response = admonService.updateProveedor(
-                    "Bearer $token", request, id
-                )
+                val response = admonService.updateProveedor("Bearer $token", request, id)
 
                 if (response.error != null) {
                     _supplierUpdateError.value = response.error
@@ -252,7 +328,6 @@ class AdmonViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val request = NewSupplierBody(nombre, contacto, telefono, correo)
-
                 val response = admonService.createProveedor("Bearer $token", request)
 
                 if (response.error != null) {
@@ -265,12 +340,6 @@ class AdmonViewModel : ViewModel() {
                 _supplierCreateError.value = e.message ?: "Error desconocido"
             }
         }
-    }
-
-
-    fun resetSupplierCreateStates() {
-        _supplierCreateSuccess.value = false
-        _supplierCreateError.value = null
     }
 
     fun deleteProveedor(id: Int) {
@@ -288,6 +357,11 @@ class AdmonViewModel : ViewModel() {
                 _supplierUpdateError.value = e.message ?: "Error desconocido"
             }
         }
+    }
+
+    fun resetSupplierCreateStates() {
+        _supplierCreateSuccess.value = false
+        _supplierCreateError.value = null
     }
 
     fun resetSupplierUpdateStates() {

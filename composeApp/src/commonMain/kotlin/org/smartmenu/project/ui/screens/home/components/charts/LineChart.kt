@@ -10,26 +10,38 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import ir.ehsannarmani.compose_charts.LineChart
-import ir.ehsannarmani.compose_charts.models.Line
-import ir.ehsannarmani.compose_charts.models.DrawStyle
-import ir.ehsannarmani.compose_charts.models.LabelProperties
-import ir.ehsannarmani.compose_charts.models.LabelHelperProperties
-import ir.ehsannarmani.compose_charts.models.HorizontalIndicatorProperties
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import ir.ehsannarmani.compose_charts.models.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.jsonPrimitive
 import org.smartmenu.project.models.Grafica
-import org.smartmenu.project.ui.SmartMenuTheme
 
 @Composable
 fun LineChart(grafica: Grafica) {
 
     val colors = MaterialTheme.colorScheme
 
-    // Serie de la línea
-    val line = remember(grafica, colors.primary) {
+    // Convertidor seguro JsonElement -> Double
+    fun jsonToDouble(el: JsonElement): Double {
+        val prim = el.jsonPrimitive
+
+        prim.doubleOrNull?.let { return it }
+        prim.content.toDoubleOrNull()?.let { return it }
+
+        return 0.0
+    }
+
+    // Convertimos los valores sin crashear
+    val numericValues = remember(grafica) {
+        grafica.values.map { jsonToDouble(it) }
+    }
+
+    // Serie de línea
+    val line = remember(numericValues) {
         Line(
-            values = grafica.values.map { it.toDouble() },
+            values = numericValues,
             color = SolidColor(colors.primary),
-            drawStyle = DrawStyle.Stroke(width = 3.dp)  // grosor correcto
+            drawStyle = DrawStyle.Stroke(width = 3.dp)
         )
     }
 
@@ -39,37 +51,20 @@ fun LineChart(grafica: Grafica) {
             .height(260.dp),
         data = listOf(line),
 
-        // Texto del eje X (abajo)
         labelProperties = LabelProperties(
             enabled = true,
             labels = grafica.labels,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)
         ),
 
-        // Texto del eje Y (izquierda)
         indicatorProperties = HorizontalIndicatorProperties(
             enabled = true,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)
         ),
 
-        // Texto superior (helpers)
         labelHelperProperties = LabelHelperProperties(
             enabled = true,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)
         )
     )
-}
-
-@Preview
-@Composable
-fun LineChartPreview() {
-    val grafica = Grafica(
-        tipo = "line",
-        titulo = "Ventas Totales por Día",
-        labels = listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"),
-        values = listOf(50, 120, 80, 150, 200, 170)
-    )
-    SmartMenuTheme {
-        LineChart(grafica)
-    }
 }

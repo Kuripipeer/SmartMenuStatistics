@@ -11,32 +11,49 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import ir.ehsannarmani.compose_charts.PieChart as ComposePieChart
 import ir.ehsannarmani.compose_charts.models.Pie
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import ir.ehsannarmani.compose_charts.models.Pie.Style
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.jsonPrimitive
 import org.smartmenu.project.models.Grafica
-import org.smartmenu.project.ui.SmartMenuTheme
 import org.smartmenu.project.ui.ChartColors
+import org.smartmenu.project.ui.SmartMenuTheme
+import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun PieChart(grafica: Grafica) {
 
-    // Paleta oficial
     val colorPalette = ChartColors
     val onTextColor = MaterialTheme.colorScheme.onBackground
 
-    // Colores asignados según label count
+    // Convertir JsonElement -> Double sin errores
+    fun toDoubleSafe(el: JsonElement): Double {
+        val prim = el.jsonPrimitive
+
+        prim.doubleOrNull?.let { return it }
+        prim.content.toDoubleOrNull()?.let { return it }
+
+        return 0.0
+    }
+
+    // Convertir valores correctamente
+    val numericValues = remember(grafica) {
+        grafica.values.map { toDoubleSafe(it) }
+    }
+
     val sliceColors = remember(grafica) {
         grafica.labels.mapIndexed { index, _ ->
             colorPalette[index % colorPalette.size]
         }
     }
 
-    // Piezas del gráfico
+    // Crear los slices
     var pies by remember(grafica) {
         mutableStateOf(
-            grafica.labels.zip(grafica.values).mapIndexed { index, (label, value) ->
+            grafica.labels.mapIndexed { index, label ->
                 Pie(
                     label = label,
-                    data = value.toDouble(),
+                    data = numericValues[index],
                     color = sliceColors[index],
                     selectedColor = sliceColors[index].copy(alpha = 0.85f),
                     selected = false
@@ -50,58 +67,60 @@ fun PieChart(grafica: Grafica) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // ----------- LEYENDA ARRIBA -----------
+        // LEYENDA
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            pies.forEachIndexed { i, pie ->
+            pies.forEach { pie ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
                             .size(14.dp)
-                            .background(pie.color, shape = androidx.compose.foundation.shape.CircleShape)
+                            .background(pie.color, shape = CircleShape)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    pie.label?.let {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = onTextColor
-                        )
-                    }
+                    Text(
+                        text = pie.label ?: "",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = onTextColor
+                    )
                 }
             }
         }
 
-        // ----------- PIE CHART -----------
+        // PIE CHART
         ComposePieChart(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp),
             data = pies,
             onPieClick = { clicked ->
-                val index = pies.indexOf(clicked)
-                pies = pies.mapIndexed { i, pie -> pie.copy(selected = i == index) }
+                pies = pies.mapIndexed { i, pie -> pie.copy(selected = clicked == pie) }
             },
             selectedScale = 1.07f,
-            style = Pie.Style.Fill
+            style = Style.Fill
         )
     }
 }
-
-@Preview
-@Composable
-fun PieChartPreview() {
-    val grafica = Grafica(
-        tipo = "pie",
-        titulo = "Platillos Vendidos",
-        labels = listOf("Hamburguesa", "Ensalada", "Pizza"),
-        values = listOf(2, 1, 1)
-    )
-    SmartMenuTheme {
-        PieChart(grafica)
-    }
-}
+//
+//@Preview
+//@Composable
+//fun PieChartPreview() {
+//    val grafica = Grafica(
+//        tipo = "pie",
+//        titulo = "Platillos Vendidos",
+//        labels = listOf("Hamburguesa", "Ensalada", "Pizza"),
+//        values = listOf(
+//            kotlinx.serialization.json.JsonElement.serializer().deserialize(
+//                kotlinx.serialization.json.Json,
+//                "\"2\""
+//            )
+//        )
+//    )
+//    SmartMenuTheme {
+//        PieChart(grafica)
+//    }
+//}

@@ -10,39 +10,57 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import ir.ehsannarmani.compose_charts.ColumnChart
-import ir.ehsannarmani.compose_charts.models.BarProperties
-import ir.ehsannarmani.compose_charts.models.Bars
-import ir.ehsannarmani.compose_charts.models.DrawStyle
-import ir.ehsannarmani.compose_charts.models.HorizontalIndicatorProperties
-import ir.ehsannarmani.compose_charts.models.LabelHelperProperties
-import ir.ehsannarmani.compose_charts.models.LabelProperties
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import ir.ehsannarmani.compose_charts.models.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.double
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.long
+import kotlinx.serialization.json.float
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.doubleOrNull
 import org.smartmenu.project.models.Grafica
-import org.smartmenu.project.ui.SmartMenuTheme
-import org.smartmenu.project.ui.ChartColors // IMPORTANTE
+import org.smartmenu.project.ui.ChartColors
 
 @Composable
 fun BarChart(grafica: Grafica) {
 
     val colors = MaterialTheme.colorScheme
 
-    // Asignar colores personalizados a cada barra
+    // Convertir JsonElement → Double de forma segura
+    fun jsonToDouble(element: JsonElement): Double {
+        val primitive = element.jsonPrimitive
+
+        // Si es número normal
+        primitive.doubleOrNull?.let { return it }
+
+        // Si viene como string numérico
+        primitive.content.toDoubleOrNull()?.let { return it }
+
+        // Si viene mal, regresamos 0
+        return 0.0
+    }
+
+    // Colores dinámicos
     val barColors = remember(grafica) {
-        grafica.labels.mapIndexed { index, _ ->
-            ChartColors[index % ChartColors.size]  // usa paleta oficial
+        grafica.labels.mapIndexed { i, _ ->
+            ChartColors[i % ChartColors.size]
         }
     }
 
-    // Construcción de la data con color por barra
+    // Construcción segura de la data
     val data = remember(grafica, barColors) {
-        grafica.labels.zip(grafica.values).mapIndexed { index, (label, value) ->
+        grafica.labels.zip(grafica.values).mapIndexed { index, (label, valueJson) ->
+
+            val numericValue = jsonToDouble(valueJson)
+
             Bars(
                 label = label,
                 values = listOf(
                     Bars.Data(
                         label = label,
-                        value = value.toDouble(),
-                        color = SolidColor(barColors[index]) // color único
+                        value = numericValue,
+                        color = SolidColor(barColors[index])
                     )
                 )
             )
@@ -60,37 +78,16 @@ fun BarChart(grafica: Grafica) {
             cornerRadius = Bars.Data.Radius.Circular(6.dp),
             style = DrawStyle.Fill
         ),
-
-        // QUITAR labels inferiores (evita recorte)
         labelProperties = LabelProperties(
             enabled = false
         ),
-
-        // Indicadores numéricos eje Y
         indicatorProperties = HorizontalIndicatorProperties(
             enabled = true,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)
         ),
-
-        // Labels superiores (ya con colores distintos)
         labelHelperProperties = LabelHelperProperties(
             enabled = true,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)
         )
     )
-
-}
-
-@Preview
-@Composable
-fun BarChartPreview() {
-    val grafica = Grafica(
-        tipo = "bar",
-        titulo = "Ventas Mensuales",
-        labels = listOf("Ene", "Feb", "Mar", "Abr", "May", "Jun"),
-        values = listOf(150, 200, 180, 220, 300, 250)
-    )
-    SmartMenuTheme {
-        BarChart(grafica = grafica)
-    }
 }
