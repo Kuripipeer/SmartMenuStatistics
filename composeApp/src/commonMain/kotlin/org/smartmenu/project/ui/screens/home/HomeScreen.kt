@@ -50,6 +50,7 @@ import org.smartmenu.project.ui.AccentPurpleDark
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
+import org.smartmenu.project.ui.SuppliersScreenRoute
 import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.home.components.ActionCard
 import org.smartmenu.project.ui.screens.home.components.GraficaCard
@@ -118,35 +119,30 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                         navController.navigate(UsersScreenRoute) {
                             popUpTo(HomeScreenRoute) { inclusive = true }
                         }
+                    }
+                )
+//                ActionCard(
+//                    text = "Agregar usuario",
+//                    icon = Icons.Default.PersonAddAlt1,
+//                    onClick = {
 //                        scope.launch {
-////                            admonVm.getUsers()
-//                            admonVm.getRoles()
-//                            //sheetState.expand()
+//                            admonVm.newUser(
+//                                nombre = "Juan Perez",
+//                                usuario = "juan.perez",
+//                                contraseña = "password123",
+//                                rol_id = 2
+//                            )
 //                        }
-
-                    }
-                )
-                ActionCard(
-                    text = "Agregar usuario",
-                    icon = Icons.Default.PersonAddAlt1,
-                    onClick = {
-                        scope.launch {
-                            admonVm.newUser(
-                                nombre = "Juan Perez",
-                                usuario = "juan.perez",
-                                contraseña = "password123",
-                                rol_id = 2
-                            )
-                        }
-                    }
-                )
+//                    }
+//                )
                 ActionCard(
                     text = "Consultar proveedor",
                     icon = Icons.Default.PersonSearch,
                     onClick = {
                         scope.launch {
-                            admonVm.getProveedores()
-                            //sheetState.expand()
+                            navController.navigate(SuppliersScreenRoute) {
+                                popUpTo(HomeScreenRoute) { inclusive = true }
+                            }
                         }
                     }
                 )

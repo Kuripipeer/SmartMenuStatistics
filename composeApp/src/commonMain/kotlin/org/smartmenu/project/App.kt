@@ -21,15 +21,21 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.smartmenu.project.ui.EditSupplierScreenRoute
 import org.smartmenu.project.ui.EditUserScreenRoute
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
+import org.smartmenu.project.ui.NewSupplierScreenRoute
 import org.smartmenu.project.ui.RegisterScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
+import org.smartmenu.project.ui.SuppliersScreenRoute
 import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.auth.LoginScreen
 import org.smartmenu.project.ui.screens.auth.RegisterScreen
 import org.smartmenu.project.ui.screens.home.HomeScreen
+import org.smartmenu.project.ui.screens.suppliers.EditAddSupplier
+import org.smartmenu.project.ui.screens.suppliers.NewSupplier
+import org.smartmenu.project.ui.screens.suppliers.SuppliersHome
 import org.smartmenu.project.ui.screens.users.EditUser
 import org.smartmenu.project.ui.screens.users.UserHome
 
@@ -72,14 +78,32 @@ fun App() {
                 }
                 composable<EditUserScreenRoute> { entry ->
                     val args = entry.toRoute<EditUserScreenRoute>()
-
                     EditUser(
                         navController = navController,
                         innerPadding = innerPadding,
                         userId = args.userId
                     )
                 }
-
+                composable<SuppliersScreenRoute>{
+                    SuppliersHome(
+                        navController = navController,
+                        innerPadding = innerPadding
+                    )
+                }
+                composable<NewSupplierScreenRoute> {
+                    NewSupplier(
+                        navController = navController,
+                        innerPadding = innerPadding
+                    )
+                }
+                composable<EditSupplierScreenRoute> {
+                    val args = it.toRoute<EditSupplierScreenRoute>()
+                    EditAddSupplier(
+                        navController = navController,
+                        innerPadding = innerPadding,
+                        supplierId = args.supplierId
+                    )
+                }
             }
         }
     }
