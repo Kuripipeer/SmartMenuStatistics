@@ -39,13 +39,14 @@ import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.screens.auth.components.RoleDropdownPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import org.smartmenu.project.ui.viewmodels.rememberAdmonViewModel
 import kotlin.reflect.KClass
 
 @Composable
 fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
 
     val colors = MaterialTheme.colorScheme
-    val admvm: AdmonViewModel = viewModel()
+    val admvm: AdmonViewModel = rememberAdmonViewModel()
 
     // Estados desde VM
     val roles = admvm.rolesList.value

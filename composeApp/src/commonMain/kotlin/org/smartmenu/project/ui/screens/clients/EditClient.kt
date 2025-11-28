@@ -30,6 +30,7 @@ import org.smartmenu.project.ui.screens.auth.components.ActionButton
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import org.smartmenu.project.ui.viewmodels.rememberAdmonViewModel
 import kotlin.reflect.KClass
 
 @Composable
@@ -38,7 +39,7 @@ fun EditClient(
     innerPadding: PaddingValues,
     clientId: Int
 ) {
-    val vm: AdmonViewModel = viewModel()
+    val vm: AdmonViewModel = rememberAdmonViewModel()
     val colors = MaterialTheme.colorScheme
 
     val selectedClient by vm.selectedClient

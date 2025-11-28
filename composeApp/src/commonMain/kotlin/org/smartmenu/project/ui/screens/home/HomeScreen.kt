@@ -72,10 +72,6 @@ import smartmenustatistics.composeapp.generated.resources.*
 fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
     val colors = MaterialTheme.colorScheme
     val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
 
     Box(
         modifier = Modifier

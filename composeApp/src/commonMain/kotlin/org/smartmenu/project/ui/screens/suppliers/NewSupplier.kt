@@ -31,13 +31,14 @@ import org.smartmenu.project.ui.screens.auth.components.ActionButton
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import org.smartmenu.project.ui.viewmodels.rememberAdmonViewModel
 import kotlin.reflect.KClass
 
 @Composable
 fun NewSupplier(navController: NavController, innerPadding: PaddingValues) {
 
     val colors = MaterialTheme.colorScheme
-    val vm: AdmonViewModel = viewModel()
+    val vm: AdmonViewModel = rememberAdmonViewModel()
 
     // ESTADOS DESDE VM
     val createSuccess by vm.supplierCreateSuccess

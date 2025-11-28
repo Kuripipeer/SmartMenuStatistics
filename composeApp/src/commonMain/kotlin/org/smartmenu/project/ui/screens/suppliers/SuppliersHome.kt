@@ -30,12 +30,13 @@ import org.smartmenu.project.ui.screens.home.components.ActionCard
 import org.smartmenu.project.ui.AccentPurpleDark
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import org.smartmenu.project.ui.viewmodels.rememberAdmonViewModel
 import kotlin.reflect.KClass
 
 @Composable
 fun SuppliersHome(navController: NavController, innerPadding: PaddingValues) {
 
-    val vm: AdmonViewModel = viewModel()
+    val vm: AdmonViewModel = rememberAdmonViewModel()
     val suppliers = vm.suppliersList.value
     val colors = MaterialTheme.colorScheme
 

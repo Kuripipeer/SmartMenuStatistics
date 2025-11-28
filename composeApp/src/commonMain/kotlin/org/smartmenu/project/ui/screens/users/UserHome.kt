@@ -25,11 +25,12 @@ import org.smartmenu.project.ui.*
 import org.smartmenu.project.ui.screens.home.components.ActionCard
 import org.smartmenu.project.ui.AccentPurpleDark
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
+import org.smartmenu.project.ui.viewmodels.rememberAdmonViewModel
 
 @Composable
 fun UserHome(navController: NavController, innerPadding: PaddingValues) {
 
-    val vm: AdmonViewModel = viewModel()
+    val vm: AdmonViewModel = rememberAdmonViewModel()
     val users = vm.usersList.value
     val colors = MaterialTheme.colorScheme
 
