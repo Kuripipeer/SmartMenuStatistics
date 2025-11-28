@@ -8,14 +8,25 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.smartmenu.project.data.services.KtorfitFactory
 import org.smartmenu.project.models.Data
-import org.smartmenu.project.models.Grafica
 import org.smartmenu.project.models.MetricsResponse
 
 class MetricsViewModel : ViewModel() {
-    val metricsService = KtorfitFactory.getMetricsService()
-    var showMetrics by mutableStateOf(false)
-    var separatedMetrics: Grafica? = null
-    var response : MetricsResponse = MetricsResponse(Data(listOf()), false)
+
+    private val metricsService = KtorfitFactory.getMetricsService()
+
+    var response by mutableStateOf(
+        MetricsResponse(
+            data = Data(graficas = emptyList()),
+            ok = false
+        )
+    )
+        private set
+
+    var isLoading by mutableStateOf(false)
+        private set
+
+    var errorMessage by mutableStateOf<String?>(null)
+        private set
 
     init {
         getMetrics()
@@ -24,17 +35,25 @@ class MetricsViewModel : ViewModel() {
     fun getMetrics() {
         viewModelScope.launch {
             try {
-                response = metricsService.getMetrics()
-                println("Metrics fetched successfully: $response")
-            }catch (e: Exception) {
+                isLoading = true
+                errorMessage = null
+
+                val result = metricsService.getMetrics()
+                response = result
+
+                println("Metrics fetched successfully: $result")
+            } catch (e: Exception) {
                 println("Error fetching metrics: ${e.message}")
+                errorMessage = e.message ?: "Error desconocido al cargar métricas"
+
+                // Dejas la respuesta en estado "sin datos"
+                response = MetricsResponse(
+                    data = Data(emptyList()),
+                    ok = false
+                )
+            } finally {
+                isLoading = false
             }
         }
-    }
-
-    fun separateMetricsByTitle(title: String){
-        separatedMetrics = response.data.graficas.firstOrNull { it.titulo == title }
-        showMetrics = true
-        println(separatedMetrics)
     }
 }

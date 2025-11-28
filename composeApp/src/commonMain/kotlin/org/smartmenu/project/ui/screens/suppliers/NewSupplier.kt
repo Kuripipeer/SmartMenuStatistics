@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -15,9 +16,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import org.smartmenu.project.ui.AccentPurpleDark
@@ -25,6 +30,8 @@ import org.smartmenu.project.ui.SuppliersScreenRoute
 import org.smartmenu.project.ui.screens.auth.components.ActionButton
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
+import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import kotlin.reflect.KClass
 
 @Composable
 fun NewSupplier(navController: NavController, innerPadding: PaddingValues) {
@@ -145,28 +152,49 @@ fun NewSupplier(navController: NavController, innerPadding: PaddingValues) {
                         text = "Nombre del proveedor",
                         value = nombre,
                         onValueChange = { nombre = it },
-                        placeholder = "Proveedor A"
+                        placeholder = "Proveedor A",
+                        imeAction = ImeAction.Next
                     )
 
                     TextFieldPrefab(
                         text = "Nombre del contacto",
                         value = contacto,
                         onValueChange = { contacto = it },
-                        placeholder = "Carlos López"
+                        placeholder = "Carlos López",
+                        imeAction = ImeAction.Next
                     )
 
                     TextFieldPrefab(
                         text = "Teléfono",
                         value = telefono,
                         onValueChange = { telefono = it },
-                        placeholder = "5551112222"
+                        placeholder = "5551112222",
+                        imeAction = ImeAction.Next
                     )
 
                     TextFieldPrefab(
                         text = "Correo electrónico",
                         value = correo,
                         onValueChange = { correo = it },
-                        placeholder = "correo@proveedor.com"
+                        placeholder = "correo@proveedor.com",
+                        imeAction = ImeAction.Send,
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if (
+                                    nombre.isBlank() ||
+                                    contacto.isBlank() ||
+                                    telefono.isBlank() ||
+                                    correo.isBlank()
+                                ) return@KeyboardActions
+
+                                vm.newSupplier(
+                                    nombre = nombre,
+                                    contacto = contacto,
+                                    telefono = telefono,
+                                    correo = correo
+                                )
+                            }
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))

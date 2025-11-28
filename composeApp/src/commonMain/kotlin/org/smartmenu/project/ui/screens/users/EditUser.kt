@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,8 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.smartmenu.project.ui.AccentPurpleDark
@@ -24,6 +29,8 @@ import org.smartmenu.project.ui.screens.auth.components.ActionButton
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.screens.auth.components.RoleDropdownPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
+import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import kotlin.reflect.KClass
 
 @Composable
 fun EditUser(
@@ -205,14 +212,16 @@ fun EditUser(
                         text = "First Name",
                         value = firstName,
                         onValueChange = { firstName = it },
-                        placeholder = "Juan"
+                        placeholder = "Juan",
+                        imeAction = ImeAction.Next
                     )
 
                     TextFieldPrefab(
                         text = "Last Name",
                         value = lastName,
                         onValueChange = { lastName = it },
-                        placeholder = "Pérez"
+                        placeholder = "Pérez",
+                        imeAction = ImeAction.Next
                     )
 
                     RoleDropdownPrefab(
@@ -225,7 +234,21 @@ fun EditUser(
                         text = "Email",
                         value = email,
                         onValueChange = { email = it },
-                        placeholder = "correo@ejemplo.com"
+                        placeholder = "correo@ejemplo.com",
+                        imeAction = ImeAction.Send,
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if (selectedRole == null) return@KeyboardActions
+
+                                vm.updateUser(
+                                    id = userId,
+                                    nombre = "$firstName $lastName",
+                                    usuario = email,
+                                    contraseña = null,
+                                    rol_id = selectedRole!!
+                                )
+                            }
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))

@@ -27,6 +27,7 @@ import org.smartmenu.project.ui.EditSupplierScreenRoute
 import org.smartmenu.project.ui.EditUserScreenRoute
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
+import org.smartmenu.project.ui.MetricsViewScreenRoute
 import org.smartmenu.project.ui.NewClientScreenRoute
 import org.smartmenu.project.ui.NewSupplierScreenRoute
 import org.smartmenu.project.ui.RegisterScreenRoute
@@ -39,6 +40,7 @@ import org.smartmenu.project.ui.screens.clients.ClientsHome
 import org.smartmenu.project.ui.screens.clients.EditClient
 import org.smartmenu.project.ui.screens.clients.NewClient
 import org.smartmenu.project.ui.screens.home.HomeScreen
+import org.smartmenu.project.ui.screens.metrics.MetricsView
 import org.smartmenu.project.ui.screens.suppliers.EditAddSupplier
 import org.smartmenu.project.ui.screens.suppliers.NewSupplier
 import org.smartmenu.project.ui.screens.suppliers.SuppliersHome
@@ -128,6 +130,12 @@ fun App() {
                         navController = navController,
                         innerPadding = innerPadding,
                         clientId = args.clientId
+                    )
+                }
+                composable<MetricsViewScreenRoute> {
+                    MetricsView(
+                        navController = navController,
+                        innerPadding = innerPadding
                     )
                 }
             }

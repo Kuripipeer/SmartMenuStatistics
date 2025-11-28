@@ -56,7 +56,7 @@ fun Header(navController: NavController) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Regresar",
-                tint = ChartBlue,
+                tint = Color.White,
                 modifier =
                     Modifier
                         .size(30.dp)
@@ -80,7 +80,7 @@ fun Header(navController: NavController) {
             Icon(
                 imageVector = Icons.Default.Settings,
                 contentDescription = "Regresar",
-                tint = ChartBlue,
+                tint = Color.White,
                 modifier = Modifier
                     .size(30.dp)
             )

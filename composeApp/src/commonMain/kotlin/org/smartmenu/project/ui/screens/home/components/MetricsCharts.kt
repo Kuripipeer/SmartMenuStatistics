@@ -17,6 +17,7 @@ import org.smartmenu.project.models.Grafica
 import org.smartmenu.project.ui.screens.home.components.charts.BarChart
 import org.smartmenu.project.ui.screens.home.components.charts.LineChart
 import org.smartmenu.project.ui.screens.home.components.charts.PieChart
+import org.smartmenu.project.ui.screens.home.components.charts.TableChart
 
 @Composable
 fun GraficaCard(
@@ -44,7 +45,8 @@ fun GraficaCard(
             when (grafica?.tipo?.lowercase()) {
                 "bar"  -> BarChart(grafica)
                 "line" -> LineChart(grafica)
-                "pie"  -> PieChart(grafica)   // por si luego mandas pie
+                "pie"  -> PieChart(grafica)
+                "table" -> TableChart(grafica)
                 else   -> Text("Tipo de gráfica no soportado: ${grafica?.tipo}")
             }
         }

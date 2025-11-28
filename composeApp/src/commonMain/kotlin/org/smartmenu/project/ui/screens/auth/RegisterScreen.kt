@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -15,9 +16,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -33,6 +38,8 @@ import org.smartmenu.project.ui.screens.auth.components.HiddenTextField
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.screens.auth.components.RoleDropdownPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
+import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import kotlin.reflect.KClass
 
 @Composable
 fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
@@ -159,7 +166,8 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         text = "First Name",
                         value = firstName,
                         onValueChange = { firstName = it },
-                        placeholder = "Juan Alfonso"
+                        placeholder = "Juan Alfonso",
+                        imeAction = ImeAction.Next
                     )
 
                     // Campo Last Name
@@ -167,7 +175,8 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         text = "Last Name",
                         value = lastName,
                         onValueChange = { lastName = it },
-                        placeholder = "Pérez López"
+                        placeholder = "Pérez López",
+                        imeAction = ImeAction.Next
                     )
 
                     // Dropdown Rol
@@ -182,7 +191,8 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         text = "Email",
                         value = email,
                         onValueChange = { email = it },
-                        placeholder = "ejemplo@gmail.com"
+                        placeholder = "ejemplo@gmail.com",
+                        imeAction = ImeAction.Next
                     )
 
                     // Password
@@ -191,7 +201,8 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         value = password,
                         onValueChange = { password = it },
                         showPassword = showPassword,
-                        onShowPasswordChange = { showPassword = !showPassword }
+                        onShowPasswordChange = { showPassword = !showPassword },
+                        imeAction = ImeAction.Next
                     )
 
                     // Confirm Password
@@ -200,7 +211,30 @@ fun RegisterScreen(navController: NavController, innerPadding: PaddingValues) {
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
                         showPassword = showConfirmPassword,
-                        onShowPasswordChange = { showConfirmPassword = !showConfirmPassword }
+                        onShowPasswordChange = { showConfirmPassword = !showConfirmPassword },
+                        imeAction = ImeAction.Send,
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if (
+                                    firstName.isBlank() ||
+                                    lastName.isBlank() ||
+                                    email.isBlank() ||
+                                    password.isBlank() ||
+                                    confirmPassword.isBlank()
+                                ) return@KeyboardActions
+
+                                if (password != confirmPassword) return@KeyboardActions
+                                if (selectedRole == null) return@KeyboardActions
+
+                                admvm.newUser(
+                                    nombre = "$firstName $lastName",
+                                    usuario = email,
+                                    contraseña = password,
+                                    rol_id = selectedRole!!.id
+                                )
+                            }
+                        )
+
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))

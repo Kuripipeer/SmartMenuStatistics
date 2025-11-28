@@ -28,3 +28,6 @@ object ClientsScreenRoute
 data class EditClientScreenRoute(val clientId: Int)
 @Serializable
 object NewClientScreenRoute
+
+@Serializable
+object MetricsViewScreenRoute

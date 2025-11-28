@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.AddBusiness
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.PeopleAlt
 import androidx.compose.material.icons.filled.Person
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.PersonPinCircle
 import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -50,6 +52,7 @@ import org.smartmenu.project.ui.AccentPurpleDark
 import org.smartmenu.project.ui.ClientsScreenRoute
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
+import org.smartmenu.project.ui.MetricsViewScreenRoute
 import org.smartmenu.project.ui.SmartMenuTheme
 import org.smartmenu.project.ui.SuppliersScreenRoute
 import org.smartmenu.project.ui.UsersScreenRoute
@@ -67,16 +70,12 @@ import smartmenustatistics.composeapp.generated.resources.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
-    val mVm: MetricsViewModel = viewModel()
-    val admonVm: AdmonViewModel = viewModel()
     val colors = MaterialTheme.colorScheme
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-    var tableTitle by remember {
-        mutableStateOf("")
-    }
+
 
     Box(
         modifier = Modifier
@@ -122,20 +121,6 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                         }
                     }
                 )
-//                ActionCard(
-//                    text = "Agregar usuario",
-//                    icon = Icons.Default.PersonAddAlt1,
-//                    onClick = {
-//                        scope.launch {
-//                            admonVm.newUser(
-//                                nombre = "Juan Perez",
-//                                usuario = "juan.perez",
-//                                contraseña = "password123",
-//                                rol_id = 2
-//                            )
-//                        }
-//                    }
-//                )
                 ActionCard(
                     text = "Consultar proveedor",
                     icon = Icons.Default.PersonSearch,
@@ -147,17 +132,24 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                         }
                     }
                 )
-//                ActionCard(
-//                    text = "Agregar proveedor",
-//                    icon = Icons.Default.AddBusiness,
-//                    onClick = {}
-//                )
                 ActionCard(
                     text = "Clientes frecuentes",
                     icon = Icons.Default.PeopleAlt,
                     onClick = {
                         scope.launch {
                             navController.navigate(ClientsScreenRoute){
+                                popUpTo(HomeScreenRoute) { inclusive = true}
+                            }
+                        }
+                    }
+                )
+
+                ActionCard(
+                    text = "Consultar métricas",
+                    icon = Icons.Default.ShowChart,
+                    onClick = {
+                        scope.launch {
+                            navController.navigate(MetricsViewScreenRoute){
                                 popUpTo(HomeScreenRoute) { inclusive = true}
                             }
                         }
@@ -189,88 +181,7 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
                 )
             }
         }
-//        item {
-//            Button(
-//                onClick = {
-//                    scope.launch {
-//                        tableTitle = "Ventas diarias"
-//                        mVm.separateMetricsByTitle(tableTitle)
-//                        sheetState.expand()
-//                    }
-//                },
-//                modifier = Modifier.fillMaxWidth(),
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-//                ),
-//                shape = RoundedCornerShape(25.dp)
-//            ) {
-//                Text(text = "Ventas diarias", color = colors.onBackground)
-//            }
-//        }
-//
-//        item {
-//            Button(
-//                onClick = {
-//                    scope.launch {
-//                        tableTitle = "Ventas por platillo"
-//                        mVm.separateMetricsByTitle(tableTitle)
-//                        sheetState.expand()
-//                    }
-//                },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 10.dp),
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-//                ),
-//                shape = RoundedCornerShape(25.dp)
-//            ) {
-//                Text(text = "Ventas por platillo", color = colors.onBackground)
-//            }
-//        }
-//
-//        item {
-//            Button(
-//                onClick = {
-//                    scope.launch {
-//                        tableTitle = "Meseros con más pedidos"
-//                        mVm.separateMetricsByTitle(tableTitle)
-//                        sheetState.expand()
-//                    }
-//                },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 10.dp, bottom = 20.dp),
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-//                ),
-//                shape = RoundedCornerShape(25.dp)
-//            ) {
-//                Text(text = "Meseros con más pedidos", color = colors.onBackground)
-//            }
-//        }
     }
-
-    if (mVm.showMetrics){
-        ModalBottomSheet(
-            onDismissRequest = {
-                scope.launch {
-                    mVm.showMetrics = false
-                    sheetState.hide()
-                }
-            },
-            sheetState = sheetState,
-        ){
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                GraficaCard(grafica = mVm.separatedMetrics)
-            }
-        }
-    }
-
 }
 
 @Preview

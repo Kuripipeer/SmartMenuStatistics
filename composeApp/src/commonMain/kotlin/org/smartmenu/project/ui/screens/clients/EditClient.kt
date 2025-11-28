@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -15,8 +16,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.smartmenu.project.ui.AccentPurpleDark
@@ -24,6 +29,8 @@ import org.smartmenu.project.ui.ClientsScreenRoute
 import org.smartmenu.project.ui.screens.auth.components.ActionButton
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.viewmodels.AdmonViewModel
+import org.smartmenu.project.ui.viewmodels.AuthViewModel
+import kotlin.reflect.KClass
 
 @Composable
 fun EditClient(
@@ -199,21 +206,34 @@ fun EditClient(
                         text = "Nombre",
                         value = nombre,
                         onValueChange = { nombre = it },
-                        placeholder = "Carlos Ramírez"
+                        placeholder = "Carlos Ramírez",
+                        imeAction = ImeAction.Next
                     )
 
                     TextFieldPrefab(
                         text = "Teléfono",
                         value = telefono,
                         onValueChange = { telefono = it },
-                        placeholder = "5511223344"
+                        placeholder = "5511223344",
+                        imeAction = ImeAction.Next
                     )
 
                     TextFieldPrefab(
                         text = "Correo",
                         value = correo,
                         onValueChange = { correo = it },
-                        placeholder = "cliente@mail.com"
+                        placeholder = "cliente@mail.com",
+                        imeAction = ImeAction.Send,
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                vm.updateClient(
+                                    id = clientId,
+                                    nombre = nombre,
+                                    telefono = telefono,
+                                    correo = correo
+                                )
+                            }
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))

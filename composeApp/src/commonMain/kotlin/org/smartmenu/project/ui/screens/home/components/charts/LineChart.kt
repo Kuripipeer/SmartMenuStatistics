@@ -15,30 +15,32 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import org.smartmenu.project.models.Grafica
+import org.smartmenu.project.ui.asDoubleList
+
+
+private fun String.isIsoDateTime(): Boolean =
+    Regex("^\\d{4}-\\d{2}-\\d{2}T").containsMatchIn(this)
 
 @Composable
 fun LineChart(grafica: Grafica) {
-
     val colors = MaterialTheme.colorScheme
 
-    // Convertidor seguro JsonElement -> Double
-    fun jsonToDouble(el: JsonElement): Double {
-        val prim = el.jsonPrimitive
-
-        prim.doubleOrNull?.let { return it }
-        prim.content.toDoubleOrNull()?.let { return it }
-
-        return 0.0
-    }
-
-    // Convertimos los valores sin crashear
+    // 1) Valores numéricos desde List<JsonElement>
     val numericValues = remember(grafica) {
-        grafica.values.map { jsonToDouble(it) }
+        grafica.values.asDoubleList()
     }
 
-    // Serie de línea
-    val line = remember(numericValues) {
+    // nos quedamos solo con lo de antes de la 'T'.
+    val displayLabels = remember(grafica.labels) {
+        grafica.labels.map { raw ->
+            if (raw.isIsoDateTime()) raw.substringBefore('T') else raw
+        }
+    }
+
+    // 3) Línea
+    val line = remember(grafica, colors.primary, numericValues) {
         Line(
+            label = grafica.titulo,
             values = numericValues,
             color = SolidColor(colors.primary),
             drawStyle = DrawStyle.Stroke(width = 3.dp)
@@ -51,17 +53,20 @@ fun LineChart(grafica: Grafica) {
             .height(260.dp),
         data = listOf(line),
 
+        // Eje X
         labelProperties = LabelProperties(
             enabled = true,
-            labels = grafica.labels,
+            labels = displayLabels,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)
         ),
 
+        // Eje Y
         indicatorProperties = HorizontalIndicatorProperties(
             enabled = true,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)
         ),
 
+        // Texto superior (helpers)
         labelHelperProperties = LabelHelperProperties(
             enabled = true,
             textStyle = TextStyle.Default.copy(color = colors.onBackground)

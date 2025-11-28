@@ -11,55 +11,32 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import ir.ehsannarmani.compose_charts.ColumnChart
 import ir.ehsannarmani.compose_charts.models.*
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.double
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.long
-import kotlinx.serialization.json.float
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.doubleOrNull
 import org.smartmenu.project.models.Grafica
 import org.smartmenu.project.ui.ChartColors
+import org.smartmenu.project.ui.asDoubleList
 
 @Composable
 fun BarChart(grafica: Grafica) {
-
     val colors = MaterialTheme.colorScheme
 
-    // Convertir JsonElement → Double de forma segura
-    fun jsonToDouble(element: JsonElement): Double {
-        val primitive = element.jsonPrimitive
-
-        // Si es número normal
-        primitive.doubleOrNull?.let { return it }
-
-        // Si viene como string numérico
-        primitive.content.toDoubleOrNull()?.let { return it }
-
-        // Si viene mal, regresamos 0
-        return 0.0
-    }
-
-    // Colores dinámicos
     val barColors = remember(grafica) {
-        grafica.labels.mapIndexed { i, _ ->
-            ChartColors[i % ChartColors.size]
+        grafica.labels.mapIndexed { index, _ ->
+            ChartColors[index % ChartColors.size]
         }
     }
 
-    // Construcción segura de la data
-    val data = remember(grafica, barColors) {
-        grafica.labels.zip(grafica.values).mapIndexed { index, (label, valueJson) ->
+    val numericValues = remember(grafica) {
+        grafica.values.asDoubleList()  // <- aquí convertimos JsonElement -> Double
+    }
 
-            val numericValue = jsonToDouble(valueJson)
-
+    val data = remember(grafica, barColors, numericValues) {
+        grafica.labels.zip(numericValues).mapIndexed { index, (label, value) ->
             Bars(
                 label = label,
                 values = listOf(
                     Bars.Data(
                         label = label,
-                        value = numericValue,
+                        value = value,                 // ya es Double
                         color = SolidColor(barColors[index])
                     )
                 )
@@ -79,7 +56,7 @@ fun BarChart(grafica: Grafica) {
             style = DrawStyle.Fill
         ),
         labelProperties = LabelProperties(
-            enabled = false
+            enabled = false // ya decidiste quitar labels de abajo
         ),
         indicatorProperties = HorizontalIndicatorProperties(
             enabled = true,

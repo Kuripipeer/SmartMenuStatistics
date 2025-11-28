@@ -35,13 +35,19 @@ import org.smartmenu.project.ui.screens.auth.components.HiddenTextField
 import org.smartmenu.project.ui.screens.auth.components.TextFieldPrefab
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.input.ImeAction
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import org.jetbrains.compose.resources.painterResource
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
 import smartmenustatistics.composeapp.generated.resources.*
+import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -139,6 +145,7 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
                         value = email,
                         onValueChange = { email = it },
                         placeholder = "ejemplo@gmail.com",
+                        imeAction = ImeAction.Next
                     )
 
                     // Password
@@ -147,7 +154,18 @@ fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
                         value = password,
                         onValueChange = { password = it },
                         showPassword = showPassword,
-                        onShowPasswordChange = { showPassword = !showPassword }
+                        onShowPasswordChange = { showPassword = !showPassword },
+                        imeAction = ImeAction.Send,
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if ( email.isBlank() || password.isBlank()) return@KeyboardActions
+
+                                authViewModel.login(
+                                    user = email,
+                                    password = password
+                                )
+                            }
+                        )
                     )
 
                     // Login Button
