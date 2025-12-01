@@ -6,3 +6,9 @@ import androidx.compose.runtime.Composable
 
 @Composable
 expect fun rememberAdmonViewModel(): AdmonViewModel
+
+@Composable
+expect fun rememberAuthViewModel(): AuthViewModel
+
+@Composable
+expect fun rememberMetricsViewModel(): MetricsViewModel

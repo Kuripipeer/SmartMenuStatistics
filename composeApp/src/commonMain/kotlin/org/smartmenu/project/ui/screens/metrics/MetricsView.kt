@@ -41,11 +41,12 @@ import org.smartmenu.project.ui.UsersScreenRoute
 import org.smartmenu.project.ui.screens.home.components.GraficaCard
 import org.smartmenu.project.ui.viewmodels.AuthViewModel
 import org.smartmenu.project.ui.viewmodels.MetricsViewModel
+import org.smartmenu.project.ui.viewmodels.rememberMetricsViewModel
 import kotlin.reflect.KClass
 
 @Composable
 fun MetricsView(navController: NavController, innerPadding: PaddingValues) {
-    val mVm: MetricsViewModel = viewModel()
+    val mVm: MetricsViewModel = rememberMetricsViewModel()
     val colors = MaterialTheme.colorScheme
 
     Box(

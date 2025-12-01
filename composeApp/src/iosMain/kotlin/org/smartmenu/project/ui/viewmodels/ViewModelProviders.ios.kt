@@ -8,3 +8,11 @@ import androidx.compose.runtime.remember
 @Composable
 actual fun rememberAdmonViewModel(): AdmonViewModel =
     remember { AdmonViewModel() }
+
+@Composable
+actual fun rememberAuthViewModel(): AuthViewModel =
+    remember { AuthViewModel() }
+
+@Composable
+actual fun rememberMetricsViewModel(): MetricsViewModel =
+    remember { MetricsViewModel() }

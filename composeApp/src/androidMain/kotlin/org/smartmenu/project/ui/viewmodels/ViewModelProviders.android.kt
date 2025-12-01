@@ -9,3 +9,11 @@ import org.smartmenu.project.utils.GenericViewModelFactory
 @Composable
 actual fun rememberAdmonViewModel(): AdmonViewModel =
     viewModel(factory = GenericViewModelFactory())
+
+@Composable
+actual fun rememberAuthViewModel(): AuthViewModel =
+    viewModel(factory = GenericViewModelFactory())
+
+@Composable
+actual fun rememberMetricsViewModel(): MetricsViewModel =
+    viewModel(factory = GenericViewModelFactory())

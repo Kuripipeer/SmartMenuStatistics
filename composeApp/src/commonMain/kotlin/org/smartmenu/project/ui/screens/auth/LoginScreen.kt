@@ -46,6 +46,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import org.jetbrains.compose.resources.painterResource
 import org.smartmenu.project.ui.HomeScreenRoute
 import org.smartmenu.project.ui.LoginScreenRoute
+import org.smartmenu.project.ui.viewmodels.rememberAuthViewModel
 import smartmenustatistics.composeapp.generated.resources.*
 import kotlin.reflect.KClass
 
@@ -53,7 +54,7 @@ import kotlin.reflect.KClass
 @Composable
 fun LoginScreen(navController: NavController, innerPadding: PaddingValues){
     val colors = MaterialTheme.colorScheme
-    val authViewModel : AuthViewModel = viewModel()
+    val authViewModel : AuthViewModel = rememberAuthViewModel()
     var email by remember {
         mutableStateOf("")
     }
